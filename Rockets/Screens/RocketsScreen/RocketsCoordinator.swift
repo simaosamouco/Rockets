@@ -22,14 +22,13 @@ final class RocketsCoordinator: RocketsCoordinatorProtocol, Coordinator {
     /// Saving a reference of a `UIViewController` to prevent coupling.
     /// There's no need for the Coordinator to know the concrete implementation of the Filters view.
     private var filtersViewController: UIViewController?
-    private let coordinator: Coordinator
+    //private let coordinator: Coordinator
     
     init(navigationController: UINavigationController,
-         factory: FactoryProtocol,
-         coordinator: Coordinator) {
+         factory: FactoryProtocol) {
         self.navigationController = navigationController
         self.factory = factory
-        self.coordinator = coordinator
+        //self.coordinator = coordinator
     }
     
     func presentFilters(launches: [Launch], delegate: FiltersDelegate) {
