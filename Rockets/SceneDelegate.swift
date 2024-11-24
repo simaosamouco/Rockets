@@ -17,10 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
   
         let factory = Factory()
-        let rocketsViewController = factory.createRocketsViewController()
-        factory.navigationController.viewControllers = [rocketsViewController]
+        let viewControllersFactory = factory.createFactoryViewControllers()
+        let rocketsViewController = viewControllersFactory.createRocketsViewController()
+        viewControllersFactory.navigationController.viewControllers = [rocketsViewController]
         
-        self.window?.rootViewController = factory.navigationController
+        self.window?.rootViewController = viewControllersFactory.navigationController
         window?.makeKeyAndVisible()
         window?.windowScene = windowScene
         

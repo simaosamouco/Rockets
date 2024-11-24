@@ -16,7 +16,7 @@ protocol RocketsCoordinatorProtocol {
 final class RocketsCoordinator: RocketsCoordinatorProtocol, Coordinator {
     
     var navigationController: UINavigationController
-    private let factory: FactoryProtocol
+    private let factory: FactoryViewControllersProtocol
     
     /// Keeping a reference of an abstraction of the `FiltersViewController` to preserve the filters state.
     /// Saving a reference of a `UIViewController` to prevent coupling.
@@ -25,7 +25,7 @@ final class RocketsCoordinator: RocketsCoordinatorProtocol, Coordinator {
     //private let coordinator: Coordinator
     
     init(navigationController: UINavigationController,
-         factory: FactoryProtocol) {
+         factory: FactoryViewControllersProtocol) {
         self.navigationController = navigationController
         self.factory = factory
         //self.coordinator = coordinator
