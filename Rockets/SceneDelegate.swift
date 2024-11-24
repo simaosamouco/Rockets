@@ -16,8 +16,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: UIScreen.main.bounds)
   
-        DependenciesRegister.registerDependencies(container: DependencyContainer.shared)
-        
         let factory = Factory()
         let rocketsViewController = factory.createRocketsViewController()
         factory.navigationController.viewControllers = [rocketsViewController]

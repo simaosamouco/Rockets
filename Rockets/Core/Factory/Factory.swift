@@ -10,19 +10,26 @@ import UIKit
 
 protocol FactoryProtocol {
     func createRocketsViewController() -> UIViewController
-    func createFiltersViewController(launches: [Launch], filtersDelegate: FiltersDelegate) -> UIViewController
+    func createFiltersViewController(launches: [Launch],
+                                     filtersDelegate: FiltersDelegate) -> UIViewController
 }
 
 /// Responsible for creating `View Controllers` with their necessary dependencies.
-struct Factory: FactoryProtocol {
+final class Factory: FactoryProtocol {
+    
+    var dependencies: [String: Any] = [:]
     
     let navigationController = UINavigationController()
+    
+    init() {
+        registerDependencies()
+    }
   
     func createRocketsViewController() -> UIViewController {
         let rocketsCoordinator = RocketsCoordinator(navigationController: navigationController,
                                                     factory: self)
-        let getImageFromUrlUseCase = DependencyContainer.shared.resolve(GetImageFromUrlUseCaseProtocol.self)
-        let getRocketsDataUseCase = DependencyContainer.shared.resolve(GetRocketsDataUseCaseProtocol.self)
+        let getImageFromUrlUseCase = resolve(GetImageFromUrlUseCaseProtocol.self)
+        let getRocketsDataUseCase = resolve(GetRocketsDataUseCaseProtocol.self)
         let rocketsViewModel = RocketsViewModel(coordinator: rocketsCoordinator,
                                                 getRocketsDataUseCase: getRocketsDataUseCase,
                                                 getImageFromUrlUseCase: getImageFromUrlUseCase)
@@ -32,7 +39,7 @@ struct Factory: FactoryProtocol {
     
     func createFiltersViewController(launches: [Launch], filtersDelegate: FiltersDelegate) -> UIViewController {
         let filtersCoordinator = FiltersCoordinator(navigationController: navigationController)
-        let filtersManager = DependencyContainer.shared.resolve(FilterLaunchesUseCaseProtocol.self)
+        let filtersManager = resolve(FilterLaunchesUseCaseProtocol.self)
         let filtersViewModel = FiltersViewModel(coordinator: filtersCoordinator,
                                                 filterLaunchesUseCase: filtersManager,
                                                 filtersDelegate: filtersDelegate,
