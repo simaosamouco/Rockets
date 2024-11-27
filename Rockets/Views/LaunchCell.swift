@@ -1,5 +1,5 @@
 //
-//  LaunchTableViewCell.swift
+//  LaunchCell.swift
 //  Rockets
 //
 //  Created by Simão Neves Samouco on 12/10/2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LaunchTableViewCell: UITableViewCell, ViewCode {
+class LaunchCell: UITableViewCell, ViewCode {
     
     // MARK: - UI Components
     // Static Labels

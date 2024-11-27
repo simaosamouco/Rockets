@@ -83,7 +83,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         
         launchesTableView.delegate = self
         launchesTableView.dataSource = self
-        launchesTableView.register(LaunchTableViewCell.self, forCellReuseIdentifier: "LaunchCell")
+        launchesTableView.register(LaunchCell.self, forCellReuseIdentifier: "LaunchCell")
     }
     
     func addConstraints() {
@@ -145,7 +145,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as! LaunchTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as! LaunchCell
         let cellViewModel = viewModel.createCellViewModel(with: launches[indexPath.row])
         cell.configure(with: cellViewModel)
         return cell
