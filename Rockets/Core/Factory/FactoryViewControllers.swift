@@ -17,7 +17,7 @@ protocol FactoryViewControllersProtocol {
 /// Responsible for creating `View Controllers` with their necessary dependencies.
 struct FactoryViewControllers: FactoryViewControllersProtocol {
    
-    let dependencies: DependencyInjectionProtocol
+    let dependencies: DependenciesResolverProtocol
     
     let navigationController = UINavigationController()
     

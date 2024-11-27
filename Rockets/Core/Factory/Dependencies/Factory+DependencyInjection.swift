@@ -5,16 +5,21 @@
 //  Created by Simão Neves Samouco on 24/11/2024.
 //
 
-protocol DependencyInjectionProtocol {
+protocol DependenciesRegisterProtocol {
     /// Register a factory closure for a type
     func register<T>(_ type: T.Type, factory: @escaping () -> T)
     
     /// Register a concrete instance for a type
     func register<T>(_ type: T.Type, instance: T)
     
+}
+
+protocol DependenciesResolverProtocol {
     /// Resolve a service for a certain type
     func resolve<T>(_ type: T.Type) -> T
 }
+
+typealias DependencyInjectionProtocol = DependenciesRegisterProtocol & DependenciesResolverProtocol
 
 extension Factory: DependencyInjectionProtocol {
     
