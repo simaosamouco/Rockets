@@ -86,4 +86,5 @@ final class LaunchCellViewModel: LaunchCellViewModelProtocol {
             ? (UIImage(systemName: "checkmark")!, .green)
             : (UIImage(systemName: "xmark")!, .red)
     }
+    
 }

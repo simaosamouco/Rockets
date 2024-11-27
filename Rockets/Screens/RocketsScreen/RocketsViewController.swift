@@ -145,7 +145,10 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as! LaunchCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as? LaunchCell else {
+            return UITableViewCell()
+        }
+                
         let cellViewModel = viewModel.createCellViewModel(with: launches[indexPath.row])
         cell.configure(with: cellViewModel)
         return cell
