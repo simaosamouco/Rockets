@@ -14,6 +14,7 @@ protocol RocketsViewModelProtocol: ObservableObject {
     func onTapFilters()
     func onSelectLaunch(_ launch: Launch)
     func getImage(_ imageURL: String) async -> UIImage
+    func createCellViewModel(with launch: Launch) -> LaunchCellViewModelProtocol
 }
 
 protocol FiltersDelegate: AnyObject {
@@ -81,6 +82,10 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         It has \(companyInfo.employees) employees, \(companyInfo.launchSites) launch sites,
         and is valued at USD \(companyInfo.valuation).
         """
+    }
+    
+    func createCellViewModel(with launch: Launch) -> LaunchCellViewModelProtocol{
+        return LaunchCellViewModel(launch: launch, getImageFromUrlUseCase: getImageFromUrlUseCase)
     }
     
 }

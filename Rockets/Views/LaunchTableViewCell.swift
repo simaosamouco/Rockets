@@ -97,6 +97,8 @@ class LaunchTableViewCell: UITableViewCell, ViewCode {
         return imageView
     }()
     
+    private var viewModel: LaunchCellViewModelProtocol?
+    
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -105,6 +107,19 @@ class LaunchTableViewCell: UITableViewCell, ViewCode {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        viewModel?.cancelImageTask()
+        viewModel = nil
+        
+        // Reset UI
+        missionImageView.image = nil
+        missionLabel.text = nil
+        rocketLabel.text = nil
+        dateLabel.text = nil
+        daysSinceLabel.text = nil
     }
     
     // MARK: - View Code
@@ -174,23 +189,16 @@ class LaunchTableViewCell: UITableViewCell, ViewCode {
     }
     
     // MARK: - Configure Cell
-    func configure(launch: Launch, image: UIImage) {
-        missionLabel.text = launch.name
-        rocketLabel.text = launch.rocket
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd-MM-yyyy"
-        dateLabel.text = formatter.string(from: launch.dateLocal)
-        daysSinceStaticLabel.text = launch.dateLocal.isInTheFuture ? "Days until launch:" : "Days since launch:"
-        daysSinceLabel.text = launch.dateLocal.isInTheFuture ? "-\(launch.dateLocal.daysSince)" : " +\(launch.dateLocal.daysSince)"
-        
-        missionImageView.image = image
-        if let success = launch.wasSuccessful {
-            checkmarkView.image = success ? UIImage(systemName: "checkmark") : UIImage(systemName: "xmark")!
-            checkmarkView.tintColor = success ? .green : .red
-        } else {
-            checkmarkView.image = UIImage(systemName: "questionmark")!
-            checkmarkView.tintColor = .black
+    func configure(with viewModel: LaunchCellViewModelProtocol) {
+        self.viewModel = viewModel
+        missionLabel.text = viewModel.missionName
+        rocketLabel.text = viewModel.rocketName
+        dateLabel.text = viewModel.launchDate
+        daysSinceLabel.text = viewModel.daysAgo
+        checkmarkView.image = viewModel.successImage
+        checkmarkView.tintColor = viewModel.successImageTintColor
+        Task {
+            missionImageView.image = await viewModel.getImage()
         }
     }
     
