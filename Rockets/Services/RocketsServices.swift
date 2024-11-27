@@ -16,6 +16,8 @@ final class RocketsServices: RocketsServicesProtocol {
     
     let networkService: NetworkServiceProtocol
     
+    private let decoder = JSONDecoder()
+    
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
     }
@@ -36,7 +38,7 @@ final class RocketsServices: RocketsServicesProtocol {
     
     private func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            return try decoder.decode(T.self, from: data)
         } catch {
             throw RocketsErros.decodingFailed
         }
