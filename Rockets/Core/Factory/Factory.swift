@@ -9,7 +9,6 @@
 import UIKit
 
 protocol FactoryProtocol {
-    
     func createFactoryViewControllers() -> FactoryViewControllersProtocol
 }
 
@@ -22,7 +21,7 @@ final class Factory: FactoryProtocol {
     }
 
     func createFactoryViewControllers() -> FactoryViewControllersProtocol {
-        return FactoryViewControllers(dependencies: self)
+        return FactoryViewControllers(dependenciesResolver: self)
     }
     
 }

@@ -11,7 +11,6 @@ protocol DependenciesRegisterProtocol {
     
     /// Register a concrete instance for a type
     func register<T>(_ type: T.Type, instance: T)
-    
 }
 
 protocol DependenciesResolverProtocol {

@@ -17,19 +17,19 @@ protocol FactoryViewControllersProtocol {
 /// Responsible for creating `View Controllers` with their necessary dependencies.
 struct FactoryViewControllers: FactoryViewControllersProtocol {
    
-    let dependencies: DependenciesResolverProtocol
+    let dependenciesResolver: DependenciesResolverProtocol
     
     let navigationController = UINavigationController()
     
-    init(dependencies: DependencyInjectionProtocol) {
-        self.dependencies = dependencies
+    init(dependenciesResolver: DependenciesResolverProtocol) {
+        self.dependenciesResolver = dependenciesResolver
     }
     
     func createRocketsViewController() -> UIViewController {
         let rocketsCoordinator = RocketsCoordinator(navigationController: navigationController,
                                                     factory: self)
-        let getImageFromUrlUseCase = dependencies.resolve(GetImageFromUrlUseCaseProtocol.self)
-        let getRocketsDataUseCase = dependencies.resolve(GetRocketsDataUseCaseProtocol.self)
+        let getImageFromUrlUseCase = dependenciesResolver.resolve(GetImageFromUrlUseCaseProtocol.self)
+        let getRocketsDataUseCase = dependenciesResolver.resolve(GetRocketsDataUseCaseProtocol.self)
         let rocketsViewModel = RocketsViewModel(coordinator: rocketsCoordinator,
                                                 getRocketsDataUseCase: getRocketsDataUseCase,
                                                 getImageFromUrlUseCase: getImageFromUrlUseCase)
@@ -39,7 +39,7 @@ struct FactoryViewControllers: FactoryViewControllersProtocol {
     
     func createFiltersViewController(launches: [Launch], filtersDelegate: FiltersDelegate) -> UIViewController {
         let filtersCoordinator = FiltersCoordinator(navigationController: navigationController)
-        let filtersManager = dependencies.resolve(FilterLaunchesUseCaseProtocol.self)
+        let filtersManager = dependenciesResolver.resolve(FilterLaunchesUseCaseProtocol.self)
         let filtersViewModel = FiltersViewModel(coordinator: filtersCoordinator,
                                                 filterLaunchesUseCase: filtersManager,
                                                 filtersDelegate: filtersDelegate,
