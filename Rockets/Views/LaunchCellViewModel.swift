@@ -14,6 +14,7 @@ protocol LaunchCellViewModelProtocol {
     var daysAgo: String { get }
     var successImage: UIImage { get }
     var successImageTintColor: UIColor { get }
+    var article: String { get }
     func getImage() async -> UIImage
     func cancelImageTask()
 }
@@ -27,6 +28,7 @@ final class LaunchCellViewModel: LaunchCellViewModelProtocol {
     let daysAgo: String
     let successImage: UIImage
     let successImageTintColor: UIColor
+    let article: String
     
     private let getImageFromUrlUseCase: GetImageFromUrlUseCaseProtocol
     private var imageTask: Task<UIImage, Never>?
@@ -44,6 +46,7 @@ final class LaunchCellViewModel: LaunchCellViewModelProtocol {
         self.launch = launch
         self.missionName = launch.name
         self.rocketName = launch.rocket
+        self.article = launch.article
         self.launchDate = Self.formatDate(launch.dateLocal)
         self.daysAgo = Self.calculateDaysAgo(from: launch.dateLocal)
         (self.successImage, self.successImageTintColor) = Self.getLaunchStatusAssets(success: launch.wasSuccessful)
