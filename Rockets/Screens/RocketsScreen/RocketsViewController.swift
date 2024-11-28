@@ -68,9 +68,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Task {
-            await viewModel.didLoad()
-        }
+        viewModel.didLoad()
         setUpViews()
     }
     

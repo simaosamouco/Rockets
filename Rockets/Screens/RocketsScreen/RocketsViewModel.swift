@@ -10,7 +10,7 @@ import UIKit
 protocol RocketsViewModelProtocol: ObservableObject {
     var textPublisher: Published<String>.Publisher { get }
     var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { get }
-    func didLoad() async
+    func didLoad()
     func onTapFilters()
     func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
     func getImage(_ imageURL: String) async -> UIImage
@@ -42,19 +42,21 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         self.getImageFromUrlUseCase = getImageFromUrlUseCase
     }
     
-    func didLoad() async {
-        do {
-            let (launches, companyInfo) = try await getRocketsDataUseCase.get()
-            updateUI(launches: launches, companyInfo: companyInfo)
-        } catch {
-            coordinator.showError(error)
+    func didLoad() {
+        Task {
+            do {
+                let (launches, companyInfo) = try await getRocketsDataUseCase.get()
+                updateUI(launches: launches, companyInfo: companyInfo)
+            } catch {
+                coordinator.showError(error)
+            }
         }
     }
     
     private func updateUI(launches: [Launch], companyInfo: CompanyInfo) {
         self.launches = launches
         self.launchesViewModels = launches.compactMap({ LaunchCellViewModel(launch: $0,
-                                                                      getImageFromUrlUseCase: getImageFromUrlUseCase) })
+                                                                            getImageFromUrlUseCase: getImageFromUrlUseCase) })
         self.text = composeCompanyInfoText(for: companyInfo)
     }
     
