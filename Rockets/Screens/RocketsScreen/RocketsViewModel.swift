@@ -9,12 +9,11 @@ import UIKit
 
 protocol RocketsViewModelProtocol: ObservableObject {
     var textPublisher: Published<String>.Publisher { get }
-    var launchesPublisher: Published<[Launch]>.Publisher { get }
+    var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { get }
     func didLoad() async
     func onTapFilters()
-    func onSelectLaunch(_ launch: Launch)
+    func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
     func getImage(_ imageURL: String) async -> UIImage
-    func createCellViewModel(with launch: Launch) -> LaunchCellViewModelProtocol
 }
 
 protocol FiltersDelegate: AnyObject {
@@ -26,8 +25,10 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     @Published var text: String = ""
     var textPublisher: Published<String>.Publisher { $text }
     
-    @Published var launches: [Launch] = []
-    var launchesPublisher: Published<[Launch]>.Publisher { $launches }
+    @Published var launchesViewModels: [LaunchCellViewModelProtocol] = []
+    var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { $launchesViewModels }
+    
+    private var launches: [Launch] = []
     
     private let getImageFromUrlUseCase: GetImageFromUrlUseCaseProtocol
     private let getRocketsDataUseCase: GetRocketsDataUseCaseProtocol
@@ -52,6 +53,8 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     private func updateUI(launches: [Launch], companyInfo: CompanyInfo) {
         self.launches = launches
+        self.launchesViewModels = launches.compactMap({ LaunchCellViewModel(launch: $0,
+                                                                      getImageFromUrlUseCase: getImageFromUrlUseCase) })
         self.text = composeCompanyInfoText(for: companyInfo)
     }
     
@@ -63,7 +66,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         coordinator.presentFilters(launches: launches, delegate: self)
     }
     
-    func onSelectLaunch(_ launch: Launch) {
+    func onSelectLaunch(_ launch: LaunchCellViewModelProtocol) {
         if let articleUrl: URL = URL(string: launch.article) {
             coordinator.openWebview(articleUrl)
         } else {
@@ -73,7 +76,8 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     /// FiltersDelegate
     func didFilter(filteredLaunches: [Launch]) {
-        launches = filteredLaunches
+        launchesViewModels = filteredLaunches.map( { LaunchCellViewModel(launch: $0,
+                                                                         getImageFromUrlUseCase: getImageFromUrlUseCase)} )
     }
     
     func composeCompanyInfoText(for companyInfo: CompanyInfo) -> String {
@@ -82,10 +86,6 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         It has \(companyInfo.employees) employees, \(companyInfo.launchSites) launch sites,
         and is valued at USD \(companyInfo.valuation).
         """
-    }
-    
-    func createCellViewModel(with launch: Launch) -> LaunchCellViewModelProtocol{
-        return LaunchCellViewModel(launch: launch, getImageFromUrlUseCase: getImageFromUrlUseCase)
     }
     
 }

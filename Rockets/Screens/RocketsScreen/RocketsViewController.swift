@@ -49,7 +49,8 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         return tb
     }()
     
-    private var launches: [Launch] = []
+    //private var launches: [Launch] = []
+    private var launchesViewModels: [LaunchCellViewModelProtocol] = []
     
     private let viewModel: any RocketsViewModelProtocol
     private var cancellables: Set<AnyCancellable> = []
@@ -123,11 +124,11 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
             }
             .store(in: &cancellables)
         
-        viewModel.launchesPublisher
+        viewModel.launchesViewModelsPublisher
             .receive(on: RunLoop.main)
             .sink { [weak self] launches in
                 guard let self else { return }
-                self.launches = launches
+                self.launchesViewModels = launches
                 self.launchesTableView.reloadData()
                 if !launches.isEmpty {
                     self.launchesTableView.scrollToRow(at: IndexPath(row: 0, section: 0),
@@ -141,21 +142,21 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     // MARK: TableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return launches.count
+        return launchesViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as? LaunchCell else {
             return UITableViewCell()
         }
-                
-        let cellViewModel = viewModel.createCellViewModel(with: launches[indexPath.row])
-        cell.configure(with: cellViewModel)
+
+        cell.configure(with: launchesViewModels[indexPath.row])
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.onSelectLaunch(launches[indexPath.row])
+        viewModel.onSelectLaunch(launchesViewModels[indexPath.row])
     }
     
     // MARK: Button Action
