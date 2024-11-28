@@ -11,37 +11,15 @@ import Combine
 class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UITableViewDataSource  {
     
     // MARK: - Properties
-    
     private lazy var rightBarButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease.circle"),
                                                       style: .plain,
                                                       target: self,
                                                       action: #selector(onTapFiltersButton))
     
-    private lazy var companyTitleLabel: UILabel = {
-        let lb = UILabel()
-        lb.text = "COMPANY"
-        lb.backgroundColor = .black
-        lb.textColor = .white
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
-    
-    private lazy var companySummaryLabel: UILabel = {
-        let lb = UILabel()
-        lb.numberOfLines = 0
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
-    
-    private lazy var launchesTitleLabel: UILabel = {
-        let lb = UILabel()
-        lb.text = "LAUNCHES"
-        lb.backgroundColor = .black
-        lb.textColor = .white
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
-    
+    private lazy var companyTitleLabel = labelFactory.makeTitleLabel(text: "COMPANY")
+    private lazy var companySummaryLabel = labelFactory.makeLabel(numberOfLines: 0)
+    private lazy var launchesTitleLabel = labelFactory.makeTitleLabel(text: "LAUNCHES")
+
     private lazy var launchesTableView: UITableView = {
         let tb = UITableView()
         tb.backgroundColor = .clear

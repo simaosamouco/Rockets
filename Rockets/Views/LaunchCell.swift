@@ -22,14 +22,14 @@ class LaunchCell: UITableViewCell, ViewCode {
     private lazy var rocketLabel = labelFactory.makeLabel(textColor: .darkGray)
     private lazy var daysSinceLabel = labelFactory.makeLabel(textColor: .darkGray)
 
-    private let missionImageView: UIImageView = {
+    private lazy var missionImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let checkmarkView: UIImageView = {
+    private lazy var checkmarkView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
