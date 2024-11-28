@@ -49,16 +49,16 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         return tb
     }()
     
-    //private var launches: [Launch] = []
-    private var launchesViewModels: [LaunchCellViewModelProtocol] = []
-    
+    private var launchesViewModels = [LaunchCellViewModelProtocol]()
     private let viewModel: any RocketsViewModelProtocol
     private var cancellables: Set<AnyCancellable> = []
+    private var labelFactory: LabelFactoryUseCaseProtocol
     
     // MARK: - Init / viewDidLoad
     
-    init(viewModel: any RocketsViewModelProtocol) {
+    init(viewModel: any RocketsViewModelProtocol, labelFactory: LabelFactoryUseCaseProtocol) {
         self.viewModel = viewModel
+        self.labelFactory = labelFactory
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -144,10 +144,8 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LaunchCell", for: indexPath) as? LaunchCell else {
-            return UITableViewCell()
-        }
-
+        let cell = LaunchCell(style: .default, reuseIdentifier: "LaunchCell", labelFactory: labelFactory)
+        
         cell.configure(with: launchesViewModels[indexPath.row])
         
         return cell

@@ -30,10 +30,12 @@ struct FactoryViewControllers: FactoryViewControllersProtocol {
                                                     factory: self)
         let getImageFromUrlUseCase = dependenciesResolver.resolve(GetImageFromUrlUseCaseProtocol.self)
         let getRocketsDataUseCase = dependenciesResolver.resolve(GetRocketsDataUseCaseProtocol.self)
+        let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
         let rocketsViewModel = RocketsViewModel(coordinator: rocketsCoordinator,
                                                 getRocketsDataUseCase: getRocketsDataUseCase,
                                                 getImageFromUrlUseCase: getImageFromUrlUseCase)
-        let rocketsViewController = RocketsViewController(viewModel: rocketsViewModel)
+        let rocketsViewController = RocketsViewController(viewModel: rocketsViewModel,
+                                                          labelFactory: labelFactory)
         return rocketsViewController
     }
     

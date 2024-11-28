@@ -11,79 +11,17 @@ class LaunchCell: UITableViewCell, ViewCode {
     
     // MARK: - UI Components
     // Static Labels
-    private let missionStaticLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .black
-        label.text = "Mission:"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let dateStaticLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .black
-        label.text = "Date/Time:"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let rocketStaticLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .black
-        label.text = "Rocket:"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let daysSinceStaticLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .black
-        label.text = "Days Since:"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private lazy var missionStaticLabel = labelFactory.makeLabel(text: "Mission")
+    private lazy var dateStaticLabel = labelFactory.makeLabel(text: "Date/Time:")
+    private lazy var rocketStaticLabel = labelFactory.makeLabel(text: "Rocket:")
+    private lazy var daysSinceStaticLabel = labelFactory.makeLabel(text: "Days Since:")
     
     // Dynamic Labels
-    private let missionLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .black
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .darkGray
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let rocketLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .darkGray
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let daysSinceLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .darkGray
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+    private lazy var missionLabel = labelFactory.makeLabel()
+    private lazy var dateLabel = labelFactory.makeLabel(textColor: .darkGray)
+    private lazy var rocketLabel = labelFactory.makeLabel(textColor: .darkGray)
+    private lazy var daysSinceLabel = labelFactory.makeLabel(textColor: .darkGray)
+
     private let missionImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -98,9 +36,11 @@ class LaunchCell: UITableViewCell, ViewCode {
     }()
     
     private var viewModel: LaunchCellViewModelProtocol?
+    private var labelFactory: LabelFactoryUseCaseProtocol
     
     // MARK: - Init
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    init(style: UITableViewCell.CellStyle, reuseIdentifier: String?, labelFactory: LabelFactoryUseCaseProtocol) {
+        self.labelFactory = labelFactory
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUpViews()
     }
