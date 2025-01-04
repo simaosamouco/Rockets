@@ -81,6 +81,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     /// FiltersDelegate
     func didFilter(filteredLaunches: [Launch]) {
         self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: launches)
+        self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: filteredLaunches)
     }
     
     func composeCompanyInfoText(for companyInfo: CompanyInfo) -> String {
