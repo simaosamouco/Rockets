@@ -60,7 +60,8 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         
         launchesTableView.delegate = self
         launchesTableView.dataSource = self
-        launchesTableView.register(LaunchCell.self, forCellReuseIdentifier: "LaunchCell")
+        launchesTableView.register(LaunchCell.self,
+                                   forCellReuseIdentifier: LaunchCell.identifier)
     }
     
     func addConstraints() {
@@ -122,7 +123,10 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = LaunchCell(style: .default, reuseIdentifier: "LaunchCell", labelFactory: labelFactory)
+
+        guard let cell = viewModel.getLaunchCell() as? LaunchCell else {
+            return UITableViewCell()
+        }
         
         cell.configure(with: launchesViewModels[indexPath.row])
         

@@ -9,6 +9,8 @@ import UIKit
 
 class LaunchCell: UITableViewCell, ViewCode {
     
+    static let identifier: String = "LaunchCell"
+    
     // MARK: - UI Components
     // Static Labels
     private lazy var missionStaticLabel = labelFactory.makeLabel(text: "Mission")
@@ -39,9 +41,9 @@ class LaunchCell: UITableViewCell, ViewCode {
     private var labelFactory: LabelFactoryUseCaseProtocol
     
     // MARK: - Init
-    init(style: UITableViewCell.CellStyle, reuseIdentifier: String?, labelFactory: LabelFactoryUseCaseProtocol) {
+    init(labelFactory: LabelFactoryUseCaseProtocol) {
         self.labelFactory = labelFactory
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .default, reuseIdentifier: Self.identifier)
         setUpViews()
     }
     

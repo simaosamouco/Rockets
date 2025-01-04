@@ -14,8 +14,12 @@ protocol FactoryViewControllersProtocol {
                                      filtersDelegate: FiltersDelegate) -> UIViewController
 }
 
+protocol FactoryTableViewCell {
+    func createLaunchCell() -> UITableViewCell
+}
+
 /// Responsible for creating `View Controllers` with their necessary dependencies.
-struct FactoryViewControllers: FactoryViewControllersProtocol {
+struct FactoryViewControllers: FactoryViewControllersProtocol, FactoryTableViewCell {
    
     let dependenciesResolver: DependenciesResolverProtocol
     
@@ -28,12 +32,13 @@ struct FactoryViewControllers: FactoryViewControllersProtocol {
     func createRocketsViewController() -> UIViewController {
         let rocketsCoordinator = RocketsCoordinator(navigationController: navigationController,
                                                     factory: self)
-        let getImageFromUrlUseCase = dependenciesResolver.resolve(GetImageFromUrlUseCaseProtocol.self)
         let getRocketsDataUseCase = dependenciesResolver.resolve(GetRocketsDataUseCaseProtocol.self)
         let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
+        let launchViewModelFactoryUseCase = dependenciesResolver.resolve(LaunchViewModelFactoryUseCaseProtocol.self)
         let rocketsViewModel = RocketsViewModel(coordinator: rocketsCoordinator,
                                                 getRocketsDataUseCase: getRocketsDataUseCase,
-                                                getImageFromUrlUseCase: getImageFromUrlUseCase)
+                                                launchViewModelFactoryUseCase: launchViewModelFactoryUseCase,
+                                                cellFactory: self)
         let rocketsViewController = RocketsViewController(viewModel: rocketsViewModel,
                                                           labelFactory: labelFactory)
         return rocketsViewController
@@ -48,6 +53,12 @@ struct FactoryViewControllers: FactoryViewControllersProtocol {
                                                 launches: launches)
         let filtersViewController = FiltersViewController(viewModel: filtersViewModel)
         return filtersViewController
+    }
+    
+    func createLaunchCell() -> UITableViewCell {
+        let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
+        let cell = LaunchCell(labelFactory: labelFactory)
+        return cell
     }
     
 }

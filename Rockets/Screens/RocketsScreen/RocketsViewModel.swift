@@ -13,7 +13,7 @@ protocol RocketsViewModelProtocol: ObservableObject {
     func didLoad()
     func onTapFilters()
     func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
-    func getImage(_ imageURL: String) async -> UIImage
+    func getLaunchCell() -> UITableViewCell
 }
 
 protocol FiltersDelegate: AnyObject {
@@ -30,16 +30,19 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     private var launches: [Launch] = []
     
-    private let getImageFromUrlUseCase: GetImageFromUrlUseCaseProtocol
+    private let launchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol
     private let getRocketsDataUseCase: GetRocketsDataUseCaseProtocol
+    private let cellFactory: FactoryTableViewCell
     private let coordinator: RocketsCoordinatorProtocol
     
     init(coordinator: RocketsCoordinatorProtocol,
          getRocketsDataUseCase: GetRocketsDataUseCaseProtocol,
-         getImageFromUrlUseCase: GetImageFromUrlUseCaseProtocol) {
+         launchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol,
+         cellFactory: FactoryTableViewCell) {
         self.coordinator = coordinator
         self.getRocketsDataUseCase = getRocketsDataUseCase
-        self.getImageFromUrlUseCase = getImageFromUrlUseCase
+        self.launchViewModelFactoryUseCase = launchViewModelFactoryUseCase
+        self.cellFactory = cellFactory
     }
     
     func didLoad() {
@@ -55,13 +58,8 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     private func updateUI(launches: [Launch], companyInfo: CompanyInfo) {
         self.launches = launches
-        self.launchesViewModels = launches.compactMap({ LaunchCellViewModel(launch: $0,
-                                                                            getImageFromUrlUseCase: getImageFromUrlUseCase) })
+        self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: launches)
         self.text = composeCompanyInfoText(for: companyInfo)
-    }
-    
-    func getImage(_ imageURL: String) async -> UIImage {
-        return await getImageFromUrlUseCase.get(from: imageURL)
     }
     
     func onTapFilters() {
@@ -76,10 +74,13 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         }
     }
     
+    func getLaunchCell() -> UITableViewCell {
+        return cellFactory.createLaunchCell()
+    }
+    
     /// FiltersDelegate
     func didFilter(filteredLaunches: [Launch]) {
-        launchesViewModels = filteredLaunches.map( { LaunchCellViewModel(launch: $0,
-                                                                         getImageFromUrlUseCase: getImageFromUrlUseCase)} )
+        self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: launches)
     }
     
     func composeCompanyInfoText(for companyInfo: CompanyInfo) -> String {

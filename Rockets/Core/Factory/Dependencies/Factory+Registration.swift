@@ -35,6 +35,11 @@ extension Factory {
         register(LabelFactoryUseCaseProtocol.self,
                  instance: LabelFactoryUseCase())
         
+        /// LaunchViewModelFactoryUseCaseProtocol
+        let getImageFromUrlUseCase = resolve(GetImageFromUrlUseCaseProtocol.self)
+        register(LaunchViewModelFactoryUseCaseProtocol.self,
+                 instance: LaunchViewModelFactoryUseCase(getImageFromUrlUseCase: getImageFromUrlUseCase))
+        
         /// Example of a factory closure register
 //        register(RocketsServicesProtocol.self) {
 //            let networkService = self.resolve(NetworkServiceProtocol.self)
