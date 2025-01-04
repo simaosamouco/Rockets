@@ -32,7 +32,6 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     var launchesCount: Int { launchesViewModels.count }
     
     private var launches: [Launch] = []
-    
     private let launchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol
     private let getRocketsDataUseCase: GetRocketsDataUseCaseProtocol
     private let cellFactory: FactoryTableViewCell
