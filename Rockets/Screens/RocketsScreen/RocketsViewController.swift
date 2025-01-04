@@ -27,7 +27,6 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         return tb
     }()
     
-    private var launchesViewModels = [LaunchCellViewModelProtocol]()
     private let viewModel: any RocketsViewModelProtocol
     private var cancellables: Set<AnyCancellable> = []
     private var labelFactory: LabelFactoryUseCaseProtocol
@@ -105,7 +104,6 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
             .receive(on: RunLoop.main)
             .sink { [weak self] launches in
                 guard let self else { return }
-                self.launchesViewModels = launches
                 self.launchesTableView.reloadData()
                 if !launches.isEmpty {
                     self.launchesTableView.scrollToRow(at: IndexPath(row: 0, section: 0),
@@ -119,22 +117,23 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     // MARK: TableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return launchesViewModels.count
+        return viewModel.launchesCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = viewModel.getLaunchCell() as? LaunchCell else {
+        guard let cell = viewModel.getLaunchCell() as? LaunchCell,
+              let launchViewModel = viewModel.launchViewModel(at: indexPath.row) else {
             return UITableViewCell()
         }
-        
-        cell.configure(with: launchesViewModels[indexPath.row])
+        cell.configure(with: launchViewModel)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.onSelectLaunch(launchesViewModels[indexPath.row])
+        guard let launchViewModel = viewModel.launchViewModel(at: indexPath.row) else { return }
+        viewModel.onSelectLaunch(launchViewModel)
     }
     
     // MARK: Button Action

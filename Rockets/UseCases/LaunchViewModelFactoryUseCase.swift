@@ -23,4 +23,5 @@ struct LaunchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol {
         launches.map( { LaunchCellViewModel(launch: $0,
                                             getImageFromUrlUseCase: getImageFromUrlUseCase)}  )
     }
+    
 }

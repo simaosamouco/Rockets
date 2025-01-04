@@ -10,10 +10,12 @@ import UIKit
 protocol RocketsViewModelProtocol: ObservableObject {
     var textPublisher: Published<String>.Publisher { get }
     var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { get }
+    var launchesCount: Int { get }
     func didLoad()
     func onTapFilters()
     func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
     func getLaunchCell() -> UITableViewCell
+    func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol?
 }
 
 protocol FiltersDelegate: AnyObject {
@@ -27,6 +29,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     @Published var launchesViewModels: [LaunchCellViewModelProtocol] = []
     var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { $launchesViewModels }
+    var launchesCount: Int { launchesViewModels.count }
     
     private var launches: [Launch] = []
     
@@ -78,9 +81,15 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         return cellFactory.createLaunchCell()
     }
     
+    func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol? {
+        guard index >= 0 && index < launchesViewModels.count else {
+            return nil
+        }
+        return launchesViewModels[index]
+    }
+    
     /// FiltersDelegate
     func didFilter(filteredLaunches: [Launch]) {
-        self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: launches)
         self.launchesViewModels = launchViewModelFactoryUseCase.execute(with: filteredLaunches)
     }
     
