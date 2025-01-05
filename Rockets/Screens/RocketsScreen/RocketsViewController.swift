@@ -122,7 +122,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = viewModel.getLaunchCell() as? LaunchCell,
+        guard let cell = viewModel.getLaunchCell(for: tableView, at: indexPath) as? LaunchCell,
               let launchViewModel = viewModel.launchViewModel(at: indexPath.row) else {
             return UITableViewCell()
         }

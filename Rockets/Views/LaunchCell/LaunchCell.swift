@@ -13,16 +13,16 @@ class LaunchCell: UITableViewCell, ViewCode {
     
     // MARK: - UI Components
     // Static Labels
-    private lazy var missionStaticLabel = labelFactory.makeLabel(text: "Mission")
-    private lazy var dateStaticLabel = labelFactory.makeLabel(text: "Date/Time:")
-    private lazy var rocketStaticLabel = labelFactory.makeLabel(text: "Rocket:")
-    private lazy var daysSinceStaticLabel = labelFactory.makeLabel(text: "Days Since:")
+    private lazy var missionStaticLabel = UILabel()
+    private lazy var dateStaticLabel = UILabel()
+    private lazy var rocketStaticLabel = UILabel()
+    private lazy var daysSinceStaticLabel = UILabel()
     
     // Dynamic Labels
-    private lazy var missionLabel = labelFactory.makeLabel()
-    private lazy var dateLabel = labelFactory.makeLabel(textColor: .darkGray)
-    private lazy var rocketLabel = labelFactory.makeLabel(textColor: .darkGray)
-    private lazy var daysSinceLabel = labelFactory.makeLabel(textColor: .darkGray)
+    private lazy var missionLabel = UILabel()
+    private lazy var dateLabel = UILabel()
+    private lazy var rocketLabel = UILabel()
+    private lazy var daysSinceLabel = UILabel()
 
     private lazy var missionImageView: UIImageView = {
         let imageView = UIImageView()
@@ -38,17 +38,31 @@ class LaunchCell: UITableViewCell, ViewCode {
     }()
     
     private var viewModel: LaunchCellViewModelProtocol?
-    private var labelFactory: LabelFactoryUseCaseProtocol
+    private var labelFactory: LabelFactoryUseCaseProtocol?
     
     // MARK: - Init
-    init(labelFactory: LabelFactoryUseCaseProtocol) {
-        self.labelFactory = labelFactory
-        super.init(style: .default, reuseIdentifier: Self.identifier)
-        setUpViews()
+   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+       super.init(style: .default, reuseIdentifier: Self.identifier)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+    }
+    
+    func injectDependencies(labelFactory: LabelFactoryUseCaseProtocol) {
+        self.labelFactory = labelFactory
+        // Reset or update the cell’s UI based on new dependencies
+         missionStaticLabel = labelFactory.makeLabel(text: "Mission")
+         dateStaticLabel = labelFactory.makeLabel(text: "Date/Time:")
+         rocketStaticLabel = labelFactory.makeLabel(text: "Rocket:")
+         daysSinceStaticLabel = labelFactory.makeLabel(text: "Days Since:")
+    
+        // Dynamic Labels
+        missionLabel = labelFactory.makeLabel()
+        dateLabel = labelFactory.makeLabel(textColor: .darkGray)
+        rocketLabel = labelFactory.makeLabel(textColor: .darkGray)
+        daysSinceLabel = labelFactory.makeLabel(textColor: .darkGray)
+        setUpViews()
     }
     
     override func prepareForReuse() {

@@ -15,7 +15,9 @@ protocol FactoryViewControllersProtocol {
 }
 
 protocol FactoryTableViewCell {
-    func createLaunchCell() -> UITableViewCell
+    // Not sure if this is the right name for the method
+    // Because it's not always creating a new cell but also reusing cells...
+    func createLaunchCell(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell
 }
 
 /// Responsible for creating `View Controllers` with their necessary dependencies.
@@ -55,10 +57,15 @@ struct FactoryViewControllers: FactoryViewControllersProtocol, FactoryTableViewC
         return filtersViewController
     }
     
-    func createLaunchCell() -> UITableViewCell {
-        let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
-        let cell = LaunchCell(labelFactory: labelFactory)
-        return cell
+    func createLaunchCell(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: LaunchCell.identifier,
+                                                    for: indexPath) as? LaunchCell {
+            let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
+            cell.injectDependencies(labelFactory: labelFactory)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
     
 }

@@ -14,7 +14,7 @@ protocol RocketsViewModelProtocol: ObservableObject {
     func didLoad()
     func onTapFilters()
     func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
-    func getLaunchCell() -> UITableViewCell
+    func getLaunchCell(for: UITableView, at: IndexPath) -> UITableViewCell
     func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol?
 }
 
@@ -76,8 +76,8 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         }
     }
     
-    func getLaunchCell() -> UITableViewCell {
-        return cellFactory.createLaunchCell()
+    func getLaunchCell(for tableView: UITableView, at index: IndexPath) -> UITableViewCell {
+        return cellFactory.createLaunchCell(for: tableView, at: index)
     }
     
     func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol? {
