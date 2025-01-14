@@ -10,21 +10,8 @@ import UIKit
 class FiltersViewController: UIViewController, ViewCode {
     
     // MARK: Properties
-    private lazy var titleLabel: UILabel = {
-        let lb = UILabel()
-        lb.text = "Filters"
-        lb.font =  UIFont.systemFont(ofSize: 18, weight: .bold)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
-    
-    private lazy var succesfulLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "Show successful launches"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var titleLabel = labelFactory.makeLabel(text: "Filters", fontSize: 18, weight: .bold)
+    private lazy var succesfulLabel = labelFactory.makeLabel(text: "Show successful launches", fontSize: 14)
     
     private lazy var showSuccessfulSlider: UISwitch = {
         let sw = UISwitch()
@@ -33,13 +20,7 @@ class FiltersViewController: UIViewController, ViewCode {
         return sw
     }()
     
-    private lazy var ascendingLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "Ascending"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var ascendingLabel = labelFactory.makeLabel(text: "Ascending", fontSize: 14)
     
     private lazy var ascendingSlider: UISwitch = {
         let sw = UISwitch()
@@ -49,13 +30,7 @@ class FiltersViewController: UIViewController, ViewCode {
         return sw
     }()
     
-    private lazy var descendingLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "Descending"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var descendingLabel = labelFactory.makeLabel(text: "Descending", fontSize: 14)
     
     private lazy var descendingSlider: UISwitch = {
         let sw = UISwitch()
@@ -65,13 +40,7 @@ class FiltersViewController: UIViewController, ViewCode {
         return sw
     }()
     
-    private lazy var dateStartLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "Start"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var dateStartLabel = labelFactory.makeLabel(text: "Start", fontSize: 14)
     
     private lazy var startDatePicker: UIDatePicker = {
        let dp = UIDatePicker()
@@ -81,13 +50,7 @@ class FiltersViewController: UIViewController, ViewCode {
         return dp
     }()
     
-    private lazy var dateEndLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "End"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var dateEndLabel = labelFactory.makeLabel(text: "End", fontSize: 14)
     
     private lazy var endDatePicker: UIDatePicker = {
        let dp = UIDatePicker()
@@ -97,13 +60,7 @@ class FiltersViewController: UIViewController, ViewCode {
         return dp
     }()
     
-    private lazy var dateLabel: UILabel =  {
-        let lb = UILabel()
-        lb.text = "Filter by year"
-        lb.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
-        lb.translatesAutoresizingMaskIntoConstraints = false
-        return lb
-    }()
+    private lazy var dateLabel = labelFactory.makeLabel(text: "Filter by year", fontSize: 14)
     
     private lazy var dateSlider: UISwitch = {
         let sw = UISwitch()
@@ -121,12 +78,14 @@ class FiltersViewController: UIViewController, ViewCode {
         return bt
     }()
     
-    let viewModel: any FiltersViewModelProtocol
+    private let viewModel: any FiltersViewModelProtocol
+    private var labelFactory: LabelFactoryUseCaseProtocol
     
     //MARK: - Init / ViewDidLoad
     
-    init(viewModel: any FiltersViewModelProtocol) {
+    init(viewModel: any FiltersViewModelProtocol, labelFactory: LabelFactoryUseCaseProtocol) {
         self.viewModel = viewModel
+        self.labelFactory = labelFactory
         super.init(nibName: nil, bundle: nil)
     }
     

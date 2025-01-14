@@ -49,11 +49,13 @@ struct FactoryViewControllers: FactoryViewControllersProtocol, FactoryTableViewC
     func createFiltersViewController(launches: [Launch], filtersDelegate: FiltersDelegate) -> UIViewController {
         let filtersCoordinator = FiltersCoordinator(navigationController: navigationController)
         let filtersManager = dependenciesResolver.resolve(FilterLaunchesUseCaseProtocol.self)
+        let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
         let filtersViewModel = FiltersViewModel(coordinator: filtersCoordinator,
                                                 filterLaunchesUseCase: filtersManager,
                                                 filtersDelegate: filtersDelegate,
                                                 launches: launches)
-        let filtersViewController = FiltersViewController(viewModel: filtersViewModel)
+        let filtersViewController = FiltersViewController(viewModel: filtersViewModel,
+                                                          labelFactory: labelFactory)
         return filtersViewController
     }
     

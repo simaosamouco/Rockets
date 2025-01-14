@@ -9,6 +9,8 @@ import UIKit
 
 protocol LabelFactoryUseCaseProtocol {
     func makeLabel(text: String) -> UILabel
+    func makeLabel(text: String, fontSize: CGFloat, weight: UIFont.Weight) -> UILabel
+    func makeLabel(text: String, fontSize: CGFloat) -> UILabel
     func makeLabel(text: String, fontSize: CGFloat, weight: UIFont.Weight, textColor: UIColor) -> UILabel
     func makeLabel() -> UILabel
     func makeLabel(numberOfLines: Int) -> UILabel
@@ -19,6 +21,24 @@ protocol LabelFactoryUseCaseProtocol {
 /// Returns a `UILabel` based on selected attributes
 /// TODO: Needs improvement to cover more scenarios
 final class LabelFactoryUseCase: LabelFactoryUseCaseProtocol {
+    func makeLabel(text: String, fontSize: CGFloat) -> UILabel {
+        let lb = UILabel()
+        lb.text = text
+        lb.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+        lb.textColor = .black
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        return lb
+    }
+    
+    func makeLabel(text: String, fontSize: CGFloat, weight: UIFont.Weight) -> UILabel {
+        let lb = UILabel()
+        lb.text = text
+        lb.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+        lb.textColor = .black
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        return lb
+    }
+    
     func makeTitleLabel(text: String) -> UILabel {
         let lb = UILabel()
         lb.text = text
