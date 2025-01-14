@@ -1,5 +1,54 @@
 # Rockets
 
+## What changed:
+### Based on the comments made a few improvemts were made to the code
+Comments made:
+1. There's no need to have a dependency container when working with a Factory design pattern.
+2. Methods in the coordinator are accessible from the view model and factory.
+3. Rockets TableView using `UITableViewDataSource` and `ReloadData()` to update its content.
+4. A lot of UILabels being created which could be done inside a `LabelsFactory`.
+5. API calls to fetch the cell image are not being cancelled when the cell is reused.
+6. New instance of `JSONDecoder` being created everytime RocketsServices decodes something.
+
+
+#### Solutions:
+### **1: There's no need to have a dependency container when working with a Factory design pattern.**   
+
+To fix this I removed the `DepencyContainer`file from the project and added a dictionary to the `Factory` which now contains the dependencies.   
+  
+Two `Factory` extension files were added, one to add (register) the dependencies into the dictionary (`Factory+Registration`) and one to hold the logic that writes and retreives values from the dependencies dictionary (`register` and `resolve`) 
+
+Note that there is a Factory that creats a FactoryViewControllers. This was made thinking of a scenario in which different factories are used (a factory fo each feature of the app, for example).
+
+### **2: Methods in the coordinator are accessible from the view model and factory.**   
+
+This was a fairly simple fix. Previously the Coordinators implemented the `Coordinator` protocol which allowed access to custom made navigation methods. Altough this method works it exposed functionality to the view model and factory.   
+So to fix this I implemented a `CoreCoordinator` which provides the same custom made navigation methods and injected it into the views coordinator.   
+This way the functionality is contained within the coordinator.
+
+**Note:** Because the views coodinator now depend on the `CoreCoordinator` which takes in a `UINavigationController` it was required that the `resolve` and `register` methods accept an argument.   
+
+### **3.** Rockets TableView using `UITableViewDataSource` and `ReloadData()` to update its content.
+This was updated to so that the table view now uses `UITableViewDiffableDataSource` as a data source. This way whenever the filters are applied there is no need to reload the whole table view. Also methods from `UITableViewDataSource`no longer need to be implemented.
+
+Note: Because I used the factory design pattern in this project I felt like creating the cell in the view controller wasn't right.   
+The cell is injected with a factory label, why should the view controller know of the cell's dependencies?   
+Moving the creation of the cell into the Factory was a challenge because I didn't just move it's creation into another place. I also wanted to preserve the `prepareForReuse` functionality, otherwise a new cell would created everytime and it would never be reused. But by passing a reference to the table view into the method of the cell creation I managed to make this work. The `prepareForReuse` method is working fine and the cells dependencies are managed in the Factory as they should.
+
+### 4. A lot of UILabels being created which could be done inside a LabelsFactory.
+Implemented a `LabelsFactory` that allows the creation of `UILabels` with different attributes with a single line of code.   
+This really cleans up a lot the views!   
+This was injected into the `view` rather than the `view model` as it is a UI related dependency.
+
+### 5. API calls to fetch the cell image are not being cancelled when the cell is reused.  
+The logic around the cell was improved by adding a view model that could handle the task of fetching the image from an URL, cancel that task when preparing for the cell reuse and managing the data format for the labels.
+This new implementation makes sure that the cell is cleaned up before being reused, preventing data display inconsistencies.
+
+### 6. New instance of `JSONDecoder` being created everytime RocketsServices decodes something.
+The code was opimized so that certained instances were not created everytime, such as `JSONDocoder` in the `RocketsServices` and `DateFormatter` in the `LaunchCell`.
+
+# ABOUT THE APP
+
 This is a Swift application that consumes the SpaceX API.
 
 The app is built using the MVVM (Model-View-ViewModel) architecture, along with other design patterns such as Dependency Injection, Coordinator, Factory, and Use Cases. It also follows a protocol-oriented implementation approach.
