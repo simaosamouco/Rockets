@@ -55,11 +55,10 @@ final class LaunchCellViewModel: LaunchCellViewModelProtocol {
     
     // MARK: - Methods
     func getImage() async -> UIImage {
-        imageTask?.cancel()
-        
-        imageTask = Task {
+        imageTask = Task { [weak self] in
+            guard let self = self else { return UIImage() }
             if Task.isCancelled { return UIImage() }
-            return await getImageFromUrlUseCase.get(from: launch.icon ?? "")
+            return await self.getImageFromUrlUseCase.get(from: launch.icon ?? "")
         }
         
         return await imageTask?.value ?? UIImage()
