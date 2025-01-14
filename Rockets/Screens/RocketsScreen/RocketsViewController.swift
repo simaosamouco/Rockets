@@ -105,7 +105,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate  {
     }
     
     func addStyling() {
-        title = "SpaceX"
+        title = viewModel.title
         rightBarButton.tintColor = .black
         view.backgroundColor = .systemBackground
     }

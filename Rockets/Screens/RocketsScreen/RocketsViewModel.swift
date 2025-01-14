@@ -8,6 +8,7 @@
 import UIKit
 
 protocol RocketsViewModelProtocol: ObservableObject {
+    var title: String { get }
     var textPublisher: Published<String>.Publisher { get }
     var launchesViewModelsPublisher: Published<[LaunchCellViewModel]>.Publisher { get }
     var launchesCount: Int { get }
@@ -23,6 +24,8 @@ protocol FiltersDelegate: AnyObject {
 }
 
 final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
+    
+    var title = "SpaceX"
     
     @Published var text: String = ""
     var textPublisher: Published<String>.Publisher { $text }
