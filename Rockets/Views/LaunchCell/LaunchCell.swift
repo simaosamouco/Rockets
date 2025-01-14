@@ -37,7 +37,7 @@ class LaunchCell: UITableViewCell, ViewCode {
         return imageView
     }()
     
-    private var viewModel: LaunchCellViewModelProtocol?
+    private var viewModel: (any LaunchCellViewModelProtocol)?
     private var labelFactory: LabelFactoryUseCaseProtocol?
     
     // MARK: - Init
@@ -70,7 +70,6 @@ class LaunchCell: UITableViewCell, ViewCode {
         viewModel?.cancelImageTask()
         viewModel = nil
         
-        // Reset UI
         missionImageView.image = nil
         missionLabel.text = nil
         rocketLabel.text = nil
@@ -145,7 +144,7 @@ class LaunchCell: UITableViewCell, ViewCode {
     }
     
     // MARK: - Configure Cell
-    func configure(with viewModel: LaunchCellViewModelProtocol) {
+    func configure(with viewModel: any LaunchCellViewModelProtocol) {
         self.viewModel = viewModel
         missionLabel.text = viewModel.missionName
         rocketLabel.text = viewModel.rocketName
@@ -153,9 +152,7 @@ class LaunchCell: UITableViewCell, ViewCode {
         daysSinceLabel.text = viewModel.daysAgo
         checkmarkView.image = viewModel.successImage
         checkmarkView.tintColor = viewModel.successImageTintColor
-        Task {
-            missionImageView.image = await viewModel.getImage()
-        }
+        Task { missionImageView.image = await viewModel.getImage() }
     }
     
 }

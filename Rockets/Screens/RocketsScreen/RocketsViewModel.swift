@@ -9,13 +9,13 @@ import UIKit
 
 protocol RocketsViewModelProtocol: ObservableObject {
     var textPublisher: Published<String>.Publisher { get }
-    var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { get }
+    var launchesViewModelsPublisher: Published<[LaunchCellViewModel]>.Publisher { get }
     var launchesCount: Int { get }
     func didLoad()
     func onTapFilters()
-    func onSelectLaunch(_ launch: LaunchCellViewModelProtocol)
+    func onSelectLaunch(_ launch: LaunchCellViewModel)
     func getLaunchCell(for: UITableView, at: IndexPath) -> UITableViewCell
-    func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol?
+    func launchViewModel(at index: Int) -> LaunchCellViewModel?
 }
 
 protocol FiltersDelegate: AnyObject {
@@ -27,8 +27,8 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     @Published var text: String = ""
     var textPublisher: Published<String>.Publisher { $text }
     
-    @Published var launchesViewModels: [LaunchCellViewModelProtocol] = []
-    var launchesViewModelsPublisher: Published<[LaunchCellViewModelProtocol]>.Publisher { $launchesViewModels }
+    @Published var launchesViewModels: [LaunchCellViewModel] = []
+    var launchesViewModelsPublisher: Published<[LaunchCellViewModel]>.Publisher { $launchesViewModels }
     var launchesCount: Int { launchesViewModels.count }
     
     private var launches: [Launch] = []
@@ -68,7 +68,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         coordinator.presentFilters(launches: launches, delegate: self)
     }
     
-    func onSelectLaunch(_ launch: LaunchCellViewModelProtocol) {
+    func onSelectLaunch(_ launch: LaunchCellViewModel) {
         if let articleUrl: URL = URL(string: launch.article) {
             coordinator.openWebview(articleUrl)
         } else {
@@ -80,7 +80,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
         return cellFactory.createLaunchCell(for: tableView, at: index)
     }
     
-    func launchViewModel(at index: Int) -> LaunchCellViewModelProtocol? {
+    func launchViewModel(at index: Int) -> LaunchCellViewModel? {
         guard index >= 0 && index < launchesViewModels.count else {
             return nil
         }

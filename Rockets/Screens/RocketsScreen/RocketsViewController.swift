@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UITableViewDataSource  {
+class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate  {
     
     // MARK: - Properties
     private lazy var rightBarButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease.circle"),
@@ -29,6 +29,7 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     
     private let viewModel: any RocketsViewModelProtocol
     private var cancellables: Set<AnyCancellable> = []
+    private var dataSource: UITableViewDiffableDataSource<LaunchesTableViewSections, LaunchCellViewModel>!
     private var labelFactory: LabelFactoryUseCaseProtocol
     
     // MARK: - Init / viewDidLoad
@@ -46,7 +47,26 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.didLoad()
+        setupDataSource()
         setUpViews()
+    }
+    
+    private func setupDataSource() {
+        dataSource = UITableViewDiffableDataSource<LaunchesTableViewSections,
+                                                   LaunchCellViewModel>(
+            tableView: launchesTableView,
+            cellProvider: { (tableView: UITableView, indexPath: IndexPath, launchViewModel: LaunchCellViewModel) in
+                guard let cell = self.viewModel.getLaunchCell(for: tableView,
+                                                              at: indexPath) as? LaunchCell,
+                      let launchViewModel = self.viewModel.launchViewModel(at: indexPath.row) else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: launchViewModel)
+                return cell
+            }
+        )
+        
+        launchesTableView.dataSource = dataSource
     }
     
     // MARK: View Code
@@ -58,7 +78,6 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
         view.addSubview(launchesTableView)
         
         launchesTableView.delegate = self
-        launchesTableView.dataSource = self
         launchesTableView.register(LaunchCell.self,
                                    forCellReuseIdentifier: LaunchCell.identifier)
     }
@@ -92,44 +111,35 @@ class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate, UI
     }
     
     func addBindings() {
-        viewModel.textPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] newText in
-                guard let self else { return }
-                self.companySummaryLabel.text = newText
-            }
-            .store(in: &cancellables)
-        
-        viewModel.launchesViewModelsPublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] launches in
-                guard let self else { return }
-                self.launchesTableView.reloadData()
-                if !launches.isEmpty {
-                    self.launchesTableView.scrollToRow(at: IndexPath(row: 0, section: 0),
-                                                       at: .top,
-                                                       animated: true)
+            viewModel.textPublisher
+                .receive(on: RunLoop.main)
+                .sink { [weak self] newText in
+                    guard let self else { return }
+                    self.companySummaryLabel.text = newText
                 }
-            }
-            .store(in: &cancellables)
-    }
-    
-    // MARK: TableView
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.launchesCount
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        guard let cell = viewModel.getLaunchCell(for: tableView, at: indexPath) as? LaunchCell,
-              let launchViewModel = viewModel.launchViewModel(at: indexPath.row) else {
-            return UITableViewCell()
+                .store(in: &cancellables)
+            
+            viewModel.launchesViewModelsPublisher
+                .receive(on: RunLoop.main)
+                .sink { [weak self] launches in
+                    guard let self else { return }
+                    
+                    var snapshot = NSDiffableDataSourceSnapshot<LaunchesTableViewSections, LaunchCellViewModel>()
+                    snapshot.appendSections([.main])
+                    snapshot.appendItems(launches)
+                    
+                    self.dataSource.apply(snapshot, animatingDifferences: true)
+                    
+                    if !launches.isEmpty {
+                        self.launchesTableView.scrollToRow(at: IndexPath(row: 0, section: 0),
+                                                           at: .top,
+                                                           animated: true)
+                    }
+                }
+                .store(in: &cancellables)
         }
-        cell.configure(with: launchViewModel)
-        
-        return cell
-    }
+    
+    // MARK: TableView didSelect
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let launchViewModel = viewModel.launchViewModel(at: indexPath.row) else { return }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol LaunchCellViewModelProtocol {
+protocol LaunchCellViewModelProtocol: Hashable {
     var missionName: String { get }
     var launchDate: String { get }
     var rocketName: String { get }
@@ -20,7 +20,7 @@ protocol LaunchCellViewModelProtocol {
 }
 
 final class LaunchCellViewModel: LaunchCellViewModelProtocol {
-    
+  
     // MARK: - Properties
     let missionName: String
     let launchDate: String
@@ -88,6 +88,22 @@ final class LaunchCellViewModel: LaunchCellViewModelProtocol {
         return success
             ? (UIImage(systemName: "checkmark")!, .green)
             : (UIImage(systemName: "xmark")!, .red)
+    }
+    
+    static func == (lhs: LaunchCellViewModel, rhs: LaunchCellViewModel) -> Bool {
+        return lhs.missionName == rhs.missionName &&
+        lhs.launchDate == rhs.launchDate &&
+        lhs.rocketName == rhs.rocketName &&
+        lhs.daysAgo == rhs.daysAgo &&
+        lhs.article == rhs.article
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(missionName)
+        hasher.combine(launchDate)
+        hasher.combine(rocketName)
+        hasher.combine(daysAgo)
+        hasher.combine(article)
     }
     
 }
