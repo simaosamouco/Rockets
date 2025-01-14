@@ -16,6 +16,9 @@ protocol DependenciesRegisterProtocol {
 protocol DependenciesResolverProtocol {
     /// Resolve a service for a certain type
     func resolve<T>(_ type: T.Type) -> T
+    
+    /// Resolve a service for a certain type with arguments
+    func resolve<T, Arg>(_ type: T.Type, argument: Arg) -> T
 }
 
 typealias DependencyInjectionProtocol = DependenciesRegisterProtocol & DependenciesResolverProtocol
@@ -33,6 +36,12 @@ extension Factory: DependencyInjectionProtocol {
         let key = String(describing: type)
         dependencies[key] = instance
     }
+    
+    /// Register a factory closure for a type that requires an argument
+    func register<T, Arg>(_ type: T.Type, factory: @escaping (Arg) -> T) {
+        let key = String(describing: type)
+        dependencies[key] = factory
+    }
 
     /// Resolve a service for a certain type
     func resolve<T>(_ type: T.Type) -> T {
@@ -49,6 +58,18 @@ extension Factory: DependencyInjectionProtocol {
         }
 
         fatalError("Could not resolve dependency.")
+    }
+    
+    /// Resolve a service for a certain type with arguments
+    func resolve<T, Arg>(_ type: T.Type, argument: Arg) -> T {
+        let key = String(describing: type)
+        
+        /// Check for a factory closure that takes an argument
+        if let factory = dependencies[key] as? (Arg) -> T {
+            return factory(argument)
+        }
+        
+        fatalError("Could not resolve dependency with argument.")
     }
     
 }
