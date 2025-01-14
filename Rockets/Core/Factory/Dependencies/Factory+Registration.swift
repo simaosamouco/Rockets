@@ -46,6 +46,11 @@ extension Factory {
 //            let rocketsServices = RocketsServices(networkService: networkService)
 //            return rocketsServices
 //        }
+        
+        /// CoreCoordinatorProtocol
+        register(CoreCoordinatorProtocol.self) { navigationController in
+            return CoreCoordinator(navigationController: navigationController)
+        }
     }
     
 }

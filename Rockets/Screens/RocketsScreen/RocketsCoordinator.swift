@@ -13,22 +13,20 @@ protocol RocketsCoordinatorProtocol {
     func showError(_ error: Error)
 }
 
-final class RocketsCoordinator: RocketsCoordinatorProtocol, Coordinator {
+final class RocketsCoordinator: RocketsCoordinatorProtocol {
     
-    var navigationController: UINavigationController
+    private let coreCoordinator: CoreCoordinatorProtocol
     private let factory: FactoryViewControllersProtocol
     
     /// Keeping a reference of an abstraction of the `FiltersViewController` to preserve the filters state.
     /// Saving a reference of a `UIViewController` to prevent coupling.
     /// There's no need for the Coordinator to know the concrete implementation of the Filters view.
     private var filtersViewController: UIViewController?
-    //private let coordinator: Coordinator
     
-    init(navigationController: UINavigationController,
+    init(coreCoordinator: CoreCoordinatorProtocol,
          factory: FactoryViewControllersProtocol) {
-        self.navigationController = navigationController
+        self.coreCoordinator = coreCoordinator
         self.factory = factory
-        //self.coordinator = coordinator
     }
     
     func presentFilters(launches: [Launch], delegate: FiltersDelegate) {
@@ -38,19 +36,19 @@ final class RocketsCoordinator: RocketsCoordinatorProtocol, Coordinator {
         }
         
         if let filtersVC = filtersViewController {
-            presentScreen(filtersVC)
+            coreCoordinator.presentScreen(filtersVC)
         }
     }
    
     func openWebview(_ url: URL) {
-        openURL(url)
+        coreCoordinator.openURL(url)
     }
     
     func showError(_ error: Error) {
         let message = (error as? RocketsErros)?.errorDescription ?? error.localizedDescription
-        showAlert(title: "Something went wrong",
-                  message: message,
-                  actions: [UIAlertAction(title: "OK", style: .default)])
+        coreCoordinator.showAlert(title: "Something went wrong",
+                                  message: message,
+                                  actions: [UIAlertAction(title: "OK", style: .default)])
     }
     
 }

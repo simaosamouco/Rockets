@@ -32,7 +32,9 @@ struct FactoryViewControllers: FactoryViewControllersProtocol, FactoryTableViewC
     }
     
     func createRocketsViewController() -> UIViewController {
-        let rocketsCoordinator = RocketsCoordinator(navigationController: navigationController,
+        let coordinator = dependenciesResolver.resolve(CoreCoordinatorProtocol.self,
+                                                       argument: navigationController)
+        let rocketsCoordinator = RocketsCoordinator(coreCoordinator: coordinator,
                                                     factory: self)
         let getRocketsDataUseCase = dependenciesResolver.resolve(GetRocketsDataUseCaseProtocol.self)
         let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
@@ -47,7 +49,9 @@ struct FactoryViewControllers: FactoryViewControllersProtocol, FactoryTableViewC
     }
     
     func createFiltersViewController(launches: [Launch], filtersDelegate: FiltersDelegate) -> UIViewController {
-        let filtersCoordinator = FiltersCoordinator(navigationController: navigationController)
+        let coordinator = dependenciesResolver.resolve(CoreCoordinatorProtocol.self,
+                                                       argument: navigationController)
+        let filtersCoordinator = FiltersCoordinator(coreCoordinator: coordinator)
         let filtersManager = dependenciesResolver.resolve(FilterLaunchesUseCaseProtocol.self)
         let labelFactory = dependenciesResolver.resolve(LabelFactoryUseCaseProtocol.self)
         let filtersViewModel = FiltersViewModel(coordinator: filtersCoordinator,

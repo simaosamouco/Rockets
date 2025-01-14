@@ -7,12 +7,22 @@
 
 import UIKit
 
-protocol Coordinator {
+protocol CoreCoordinatorProtocol {
     var navigationController: UINavigationController { get }
 }
 
-/// Extension to provide default methods for `Coordinator`
-extension Coordinator {
+public class CoreCoordinator: CoreCoordinatorProtocol {
+    
+    var navigationController: UINavigationController
+    
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+}
+
+/// Extension to provide default methods for `CoreCoordinatorProtocol`
+extension CoreCoordinatorProtocol {
     
     func goBack() {
         navigationController.popViewController(animated: true)

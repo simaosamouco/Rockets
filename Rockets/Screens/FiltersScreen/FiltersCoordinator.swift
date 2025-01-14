@@ -7,20 +7,20 @@
 
 import UIKit
 
-protocol FiltersCoordinatorProtocol: Coordinator {
+protocol FiltersCoordinatorProtocol {
     func dismissFilters()
 }
 
 final class FiltersCoordinator: FiltersCoordinatorProtocol {
     
-    var navigationController: UINavigationController
+    private let coreCoordinator: CoreCoordinatorProtocol
     
-    init(navigationController: UINavigationController) {
-        self.navigationController = navigationController
+    init(coreCoordinator: CoreCoordinatorProtocol) {
+        self.coreCoordinator = coreCoordinator
     }
     
     func dismissFilters() {
-        dismiss()
+        coreCoordinator.dismiss()
     }
     
 }
