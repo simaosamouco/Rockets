@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate  {
+class RocketsViewController: UIViewController, ViewCode, UITableViewDelegate {
     
     // MARK: - Properties
     private lazy var rightBarButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease.circle"),

@@ -11,7 +11,6 @@ protocol RocketsViewModelProtocol: ObservableObject {
     var title: String { get }
     var textPublisher: Published<String>.Publisher { get }
     var launchesViewModelsPublisher: Published<[LaunchCellViewModel]>.Publisher { get }
-    var launchesCount: Int { get }
     func didLoad()
     func onTapFilters()
     func onSelectLaunch(_ launch: LaunchCellViewModel)
@@ -32,7 +31,6 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     
     @Published var launchesViewModels: [LaunchCellViewModel] = []
     var launchesViewModelsPublisher: Published<[LaunchCellViewModel]>.Publisher { $launchesViewModels }
-    var launchesCount: Int { launchesViewModels.count }
     
     private var launches: [Launch] = []
     private let launchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol
@@ -40,6 +38,7 @@ final class RocketsViewModel: RocketsViewModelProtocol, FiltersDelegate {
     private let cellFactory: FactoryTableViewCell
     private let coordinator: RocketsCoordinatorProtocol
     
+    // MARK: Init
     init(coordinator: RocketsCoordinatorProtocol,
          getRocketsDataUseCase: GetRocketsDataUseCaseProtocol,
          launchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol,

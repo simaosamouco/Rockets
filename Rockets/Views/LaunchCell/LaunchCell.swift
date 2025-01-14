@@ -51,13 +51,12 @@ class LaunchCell: UITableViewCell, ViewCode {
     
     func injectDependencies(labelFactory: LabelFactoryUseCaseProtocol) {
         self.labelFactory = labelFactory
-        // Reset or update the cell’s UI based on new dependencies
+        // Label updates with labelFactory
          missionStaticLabel = labelFactory.makeLabel(text: "Mission")
          dateStaticLabel = labelFactory.makeLabel(text: "Date/Time:")
          rocketStaticLabel = labelFactory.makeLabel(text: "Rocket:")
          daysSinceStaticLabel = labelFactory.makeLabel(text: "Days Since:")
     
-        // Dynamic Labels
         missionLabel = labelFactory.makeLabel()
         dateLabel = labelFactory.makeLabel(textColor: .darkGray)
         rocketLabel = labelFactory.makeLabel(textColor: .darkGray)

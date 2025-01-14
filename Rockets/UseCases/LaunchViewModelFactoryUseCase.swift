@@ -21,7 +21,7 @@ struct LaunchViewModelFactoryUseCase: LaunchViewModelFactoryUseCaseProtocol {
     
     func execute(with launches: [Launch]) -> [LaunchCellViewModel] {
         launches.map( { LaunchCellViewModel(launch: $0,
-                                            getImageFromUrlUseCase: getImageFromUrlUseCase) }  )
+                                            getImageFromUrlUseCase: getImageFromUrlUseCase) } )
     }
     
 }
