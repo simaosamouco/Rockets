@@ -1,9 +1,9 @@
 # Rockets
 
 ## What changed:
-### Based on the comments made a few improvemts were made to the code
+### Based on the comments made a few improvements were made to the code
 Comments made:
-1. There's no need to have a dependency container when working with a Factory design pattern.
+1. There's no need to have a dependency container when working with the Factory design pattern.
 2. Methods in the coordinator are accessible from the view model and factory.
 3. Rockets TableView using `UITableViewDataSource` and `ReloadData()` to update its content.
 4. A lot of UILabels being created which could be done inside a `LabelsFactory`.
@@ -14,11 +14,11 @@ Comments made:
 #### Solutions:
 ### **1: There's no need to have a dependency container when working with a Factory design pattern.**   
 
-To fix this I removed the `DepencyContainer`file from the project and added a dictionary to the `Factory` which now contains the dependencies.   
+To fix this I removed the `DepencyContainer` file from the project and added a dictionary to the `Factory` which now contains the dependencies.   
   
-Two `Factory` extension files were added, one to add (register) the dependencies into the dictionary (`Factory+Registration`) and one to hold the logic that writes and retreives values from the dependencies dictionary (`register` and `resolve`) 
+Two `Factory` extension files were added, one to add (register) the dependencies into the dictionary (`Factory+Registration`) and one that holds the logic that writes and retreives values from the dependencies dictionary (`register` and `resolve`) 
 
-Note that there is a Factory that creats a FactoryViewControllers. This was made thinking of a scenario in which different factories are used (a factory fo each feature of the app, for example).
+Note that there is a Factory that creates a `FactoryViewControllers`. This was made thinking of a scenario in which different factories are used (a factory for each feature of the app, for example).
 
 ### **2: Methods in the coordinator are accessible from the view model and factory.**   
 
@@ -33,7 +33,7 @@ This was updated to so that the table view now uses `UITableViewDiffableDataSour
 
 Note: Because I used the factory design pattern in this project I felt like creating the cell in the view controller wasn't right.   
 The cell is injected with a factory label, why should the view controller know of the cell's dependencies?   
-Moving the creation of the cell into the Factory was a challenge because I didn't just move it's creation into another place. I also wanted to preserve the `prepareForReuse` functionality, otherwise a new cell would created everytime and it would never be reused. But by passing a reference to the table view into the method of the cell creation I managed to make this work. The `prepareForReuse` method is working fine and the cells dependencies are managed in the Factory as they should.
+Moving the creation of the cell into the Factory was a challenge because I didn't just want to move it's creation into another place. I also wanted to preserve the `prepareForReuse` functionality, otherwise a new cell would be created everytime and it would never be reused. But by passing a reference of the table view into the method of the cell creation I managed to make this work. The `prepareForReuse` method is working fine and the cells dependencies are managed in the Factory as they should.
 
 ### 4. A lot of UILabels being created which could be done inside a LabelsFactory.
 Implemented a `LabelsFactory` that allows the creation of `UILabels` with different attributes with a single line of code.   
@@ -42,10 +42,14 @@ This was injected into the `view` rather than the `view model` as it is a UI rel
 
 ### 5. API calls to fetch the cell image are not being cancelled when the cell is reused.  
 The logic around the cell was improved by adding a view model that could handle the task of fetching the image from an URL, cancel that task when preparing for the cell reuse and managing the data format for the labels.
-This new implementation makes sure that the cell is cleaned up before being reused, preventing data display inconsistencies.
+This new implementation makes sure that the cell is cleaned up before reused, preventing data display inconsistencies.
 
 ### 6. New instance of `JSONDecoder` being created everytime RocketsServices decodes something.
 The code was opimized so that certained instances were not created everytime, such as `JSONDocoder` in the `RocketsServices` and `DateFormatter` in the `LaunchCell`.
+
+### Note
+I am aware that some of the implementaions might be a little overkill for a small project like this.   
+I tried to develop an app that could grow into something bigger and that follows the SOLID principles.
 
 # ABOUT THE APP
 
